@@ -3,6 +3,7 @@ module.exports = (app, connection) => {
         const docId = req.params.docId;
         connection.query('SELECT * FROM doctors WHERE id=?;',docId, (err, results) =>{
           if (err) throw err;
+          response.header("Access-Control-Allow-Origin", "*");
           response.send(results)
         });
     });
@@ -52,6 +53,31 @@ module.exports = (app, connection) => {
     const month = req.params.month;
     const day = req.params.day;
     connection.query('SELECT hour FROM available_dates WHERE doctor_id=? AND year=? AND month=? AND day=? AND is_available="true";',[docId, year, month, day], (err, results) =>{
+      if (err) throw err;
+      response.header("Access-Control-Allow-Origin", "*");
+      response.send(results)
+    });
+  });
+
+  app.get('/medicalFields', function(req, response) {
+    connection.query('SELECT distinct(field) FROM doctors;', (err, results) =>{
+      if (err) throw err;
+      response.header("Access-Control-Allow-Origin", "*");
+      response.send(results)
+    });
+  });
+
+  app.get('/doctorsNames', function(req, response) {
+    connection.query('SELECT name FROM doctors;', (err, results) =>{
+      if (err) throw err;
+      response.header("Access-Control-Allow-Origin", "*");
+      response.send(results)
+    });
+});
+
+  app.get('/doctorsByName/:name', function(req, response) {
+    const name = req.params.name;
+    connection.query('SELECT * FROM doctors where name LIKE ?', ['%' + name + '%'], (err, results) =>{
       if (err) throw err;
       response.header("Access-Control-Allow-Origin", "*");
       response.send(results)
