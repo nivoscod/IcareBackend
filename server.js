@@ -1,9 +1,17 @@
 const express = require("express");
 const mysql = require("mysql");
 const PORT = process.env.PORT || 8080;
+const bodyParser = require('body-parser')
 
 const app = express();
 
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
+
+app.use(bodyParser.json())
 
 const connection = mysql.createConnection({
   host: "localhost",
