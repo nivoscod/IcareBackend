@@ -75,21 +75,22 @@ module.exports = (app, connection) => {
     });
 });
 
-  app.get('/filterdocs', function(req, response) {
-    const doc = req.query.doc;
-    const field = req.query.field;
-    if (field != '') {
+app.get('/filterdocs', function(req, response) {
+  const doc = req.query.doc;
+  const field = req.query.field;
+  if (field != '') {
     connection.query('SELECT * FROM doctors where name LIKE ? AND field=?', ['%' + doc + '%', field], (err, results) =>{
-      if (err) throw err;
-      response.header("Access-Control-Allow-Origin", "*");
-      response.send(results)
-    });}
-    else {
-      connection.query('SELECT * FROM doctors where name LIKE ?', ['%' + doc + '%'], (err, results) =>{
-        if (err) throw err;
-        response.header("Access-Control-Allow-Origin", "*");
-        response.send(results)
-    });}
-  });
+    if (err) throw err;
+    response.header("Access-Control-Allow-Origin", "*");
+    response.send(results)
+  })}
+  else {
+    connection.query('SELECT * FROM doctors where name LIKE ?', ['%' + doc + '%'], (err, results) =>{
+    if (err) throw err;
+    response.header("Access-Control-Allow-Origin", "*");
+    response.send(results)
+  })}
+});
+
 
 }
