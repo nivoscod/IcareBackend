@@ -1,3 +1,6 @@
+﻿const jwt = require('jsonwebtoken');
+const config = require('../../config.json');
+
 module.exports = (app, connection) => {
     app.get('/doctors/:docId', function(req, response) {
         const docId = req.params.docId;
@@ -95,6 +98,18 @@ module.exports = (app, connection) => {
         if (err) throw err;
         response.header("Access-Control-Allow-Origin", "*");
         response.send(results)
+  })});
+
+
+  app.post('/doctors/authenticate', function(req, respone) {
+    let docEmail = req.body.docEmail !== '' ? req.body.docEmail : null
+    let docPassword = req.body.docPassword !== '' ? req.body.docPassword : null
+   connection.query('SELECT user_id, doctor_id, doctor_email FROM doctors_users WHERE doctor_email=? AND doctor_password=?', ['meni@okili.com', '1234meni'], (err, results) => {
+      if (err) return respone.status(400).json({ message: 'Username or password is incorrect' })
+      else {
+        const token = jwt.sign({ sub: results }, config.secret);
+        respone.send({results, token})
+      }
   })});
 
     app.post('/attendappointment', (req, res) => {
